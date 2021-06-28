@@ -1,0 +1,16 @@
+language: java
+
+jdk:
+  - openjdk8
+
+services:
+  - docker
+  
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker pull openjdk:8-jdk-alpine
+  - chmod +x ./mvnw
+
+script:
+  - ./mvnw clean install
+  - ./mvnw heroku:deploy jib:build -X -P deploy-heroku,deploy-docker
